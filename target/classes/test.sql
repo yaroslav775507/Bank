@@ -1,0 +1,1 @@
+insert into users( name, money) VALUES ('Lena',25);
