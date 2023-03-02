@@ -89,11 +89,11 @@ public class Main {
 
 
         System.out.println("Выберите услугу:");
-        System.out.println("1-Пополнить счет");
+       // System.out.println("1-Пополнить счет");
         System.out.println("1-Осуществить перевод средств");
-        System.out.println("3-Пополнить баланс телефона");
-        System.out.println("4-Передать сообщение");
-        System.out.println("5-Осуществить перевод между своими счетами");
+//        System.out.println("3-Пополнить баланс телефона");
+//        System.out.println("4-Передать сообщение");
+//        System.out.println("5-Осуществить перевод между своими счетами");
         int about = Integer.parseInt(s.nextLine());
 
 
