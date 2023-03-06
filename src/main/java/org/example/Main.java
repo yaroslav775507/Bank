@@ -1,4 +1,6 @@
 package org.example;
+import com.mysql.cj.xdevapi.SelectStatement;
+
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
@@ -103,6 +105,7 @@ public class Main {
             //Перевод между пользователями
             if (about == 1) {
                 System.out.println("Выберите счет перевода");
+                //Вывод всех пользователей из базы данных.
                 try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
                     Statement statement = con.createStatement();
 
@@ -112,17 +115,29 @@ public class Main {
                         int id = resultSet.getInt(1);
                         String name = resultSet.getString(2);
                         System.out.printf("%d. %s  \n", id, name);
+
                     }
-                }
-                int choose = Integer.parseInt(s.nextLine());
-                try(Connection con = DriverManager.getConnection(URL,USERNAME,PASSWORD)) {
-                    Statement statement = con.createStatement();
-                    int resultSet = statement.executeUpdate("UPDATE YRtest.users SET money = money - 5000");
-                    System.out.printf("Updated %d rows", resultSet);
-                }
-                }
+                //Здесь необходимо реализовать выборку пользователя из списка выше
+
+                    System.out.print("Введите идентификатор пользователя: ");
+                    int userId = s.nextInt();
+                    String query = "SELECT * FROM YRtest.users WHERE id = ?";
+                    PreparedStatement statement2 = con.prepareStatement(query);
+                    statement2.setInt(1, userId);
+                    ResultSet result = statement2.executeQuery();
+
+                    if (result.next()) {
+                        String firstName = result.getString("name");
+                        String lastName = result.getString("money");
+                        System.out.println("Пользователь: " + firstName + " счет " + lastName);
+                    } else {
+                        System.out.println("Пользователь с идентификатором " + userId + " не найден");
+                    }
+                    //Здесь необходимо осуществлять переводы между счетами.
 
 
+                }
+            }
 
 
 
