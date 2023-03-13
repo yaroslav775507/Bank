@@ -15,7 +15,7 @@ public class Main {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
-                System.out.println("Подключение успешно!");
+                System.out.println("Добро пожаловать, подключение успешно!");
             }
         } catch (Exception ex) {
             System.out.println("Есть проблемки(");
@@ -89,7 +89,6 @@ public class Main {
         }
 
 
-
         System.out.println("Выберите услугу:");
        // System.out.println("1-Пополнить счет");
         System.out.println("1-Осуществить перевод средств");
@@ -117,7 +116,7 @@ public class Main {
                         System.out.printf("%d. %s  \n", id, name);
 
                     }
-                //Здесь необходимо реализовать выборку пользователя из списка выше
+                //Здесь необходимо реализована выборка пользователя из списка выше и осуществляется перевод между счетами
 
                     System.out.print("Введите идентификатор пользователя: ");
                     int userId = s.nextInt();
@@ -127,15 +126,17 @@ public class Main {
                     ResultSet result = statement2.executeQuery();
 
                     if (result.next()) {
+                        int x = 0;
                         String firstName = result.getString("name");
-                        String lastName = result.getString("money");
-                        System.out.println("Пользователь: " + firstName + " счет " + lastName);
+                        int money = result.getInt("money");
+                        System.out.println("Пользователь: " + firstName + " счет " + money);
+                        System.out.println("Введите сумму перевода");
+                        int suma = s.nextInt();
+                        x = money + suma;
+                        System.out.println("Пользователь: " + firstName + " счет " + x);
                     } else {
                         System.out.println("Пользователь с идентификатором " + userId + " не найден");
                     }
-                    //Здесь необходимо осуществлять переводы между счетами.
-
-
                 }
             }
 
