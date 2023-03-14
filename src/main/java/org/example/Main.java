@@ -5,17 +5,15 @@ import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Main {
-    private static final String URL ="jdbc:mysql://localhost/YRtest";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD ="root1234";
+import static org.example.DataBase.*;
 
+public class Main {
     public static void main(String[] args) throws IOException, SQLException {
         //Подключение к БД
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
-                System.out.println("Добро пожаловать, подключение успешно!");
+                System.out.println("Добро пожаловать, подключение успешно установленно!");
             }
         } catch (Exception ex) {
             System.out.println("Есть проблемки(");
@@ -41,9 +39,20 @@ public class Main {
             break;
         }
 
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("Выберите вход:");
+        System.out.println("1-Войти");
+        System.out.println("2-Зарегистрироваться");
+        System.out.println("3-Перевести средства");
+//        System.out.println("3-Пополнить баланс телефона");
+//        System.out.println("4-Передать сообщение");
+//        System.out.println("5-Осуществить перевод между своими счетами");
+        int about = Integer.parseInt(s.nextLine());
+
+
 
         //Заполнение БД и работа с командной строкой
-        Scanner s = new Scanner(System.in);
         System.out.println("Введите ваше имя");
         String nameUser = s.nextLine();
         String sqlCommand = " INSERT INTO YRtest.users (name,money) value ( ? , ? ) ";
@@ -89,13 +98,7 @@ public class Main {
         }
 
 
-        System.out.println("Выберите услугу:");
-       // System.out.println("1-Пополнить счет");
-        System.out.println("1-Осуществить перевод средств");
-//        System.out.println("3-Пополнить баланс телефона");
-//        System.out.println("4-Передать сообщение");
-//        System.out.println("5-Осуществить перевод между своими счетами");
-        int about = Integer.parseInt(s.nextLine());
+
 
 
 
