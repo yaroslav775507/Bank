@@ -45,67 +45,93 @@ public class Main {
         System.out.println("1-Войти");
         System.out.println("2-Зарегистрироваться");
         System.out.println("3-Перевести средства");
-//        System.out.println("3-Пополнить баланс телефона");
-//        System.out.println("4-Передать сообщение");
-//        System.out.println("5-Осуществить перевод между своими счетами");
         int about = Integer.parseInt(s.nextLine());
 
 
+        //Вход
+        if(about==1){
+            int a = 0;
+            do {
+                try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+                    System.out.println("Введите имя");
+                    String username = s.nextLine();
+                    System.out.println("Введите пароль");
+                    String password = s.nextLine();
+                    Statement statement = con.createStatement();
+                    String query = "SELECT * FROM YRtest.users WHERE name = '" + username + "' AND password = '" + password + "'";
+                    ResultSet resultSet = statement.executeQuery(query);
 
+
+                    // Проверка результатов запроса
+                    if(resultSet.next()){
+                        System.out.println("Доступ предоставлен");
+                        a++;
+                    } else {
+                        System.out.println("Введите данные еще раз");
+                    }
+                }
+            }while (a==0);
+        }
+
+        //Регистрация
         //Заполнение БД и работа с командной строкой
-        System.out.println("Введите ваше имя");
-        String nameUser = s.nextLine();
-        String sqlCommand = " INSERT INTO YRtest.users (name,money) value ( ? , ? ) ";
+        if(about==2){
+            System.out.println("Введите ваше имя");
+            String nameUser = s.nextLine();
+            System.out.println("Введите пароль");
+            String password = s.nextLine();
+            System.out.println("Введите ваш пол");
+            String gender = s.nextLine();
+            String sqlCommand = " INSERT INTO YRtest.users (name,money,password,gender) value ( ? , ?, ?, ? ) ";
 
 
-        System.out.println(nameUser + " добро пожаловать в YR банк!");
-        //Создание файла
-        File file = new File("About.txt");
-        if (file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            System.out.println(nameUser + " добро пожаловать в YR банк!");
+            //Создание файла
+            File file = new File("About.txt");
+            if (file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
 
-        //Заполнение файла
-        FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write(nameUser);
-        fileWriter.flush();
+            //Заполнение файла
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(nameUser);
+            fileWriter.flush();
 
-        FileReader fileReader = new FileReader(file);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.newLine();
-        bufferedWriter.write("Здесь будет вся ваша информация.");
-        bufferedWriter.flush();
+            FileReader fileReader = new FileReader(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.newLine();
+            bufferedWriter.write("Здесь будет вся ваша информация.");
+            bufferedWriter.newLine();
+            bufferedWriter.write(gender);
+            bufferedWriter.flush();
 
 
-        System.out.println("Введите желаемый баланс");
-        int sum = Integer.parseInt(s.nextLine());
-        bufferedWriter.newLine();
-        bufferedWriter.write("Ваш баланс равен: " + sum);
-        bufferedWriter.flush();
-        try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
-            PreparedStatement preparedStatement = con.prepareStatement(sqlCommand);
-            {
-                //Добавление данных в БД
-                preparedStatement.setString(1, nameUser);
-                preparedStatement.setInt(2, sum);
-                preparedStatement.executeUpdate(); // выполняем запрос
-                System.out.println("Данные успешно добавлены!");
+            System.out.println("Введите желаемый баланс");
+            int sum = Integer.parseInt(s.nextLine());
+            bufferedWriter.newLine();
+            bufferedWriter.write("Ваш баланс равен: " + sum);
+            bufferedWriter.flush();
+            try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+                PreparedStatement preparedStatement = con.prepareStatement(sqlCommand);
+                {
+                    //Добавление данных в БД
+                    preparedStatement.setString(1, nameUser);
+                    preparedStatement.setInt(2, sum);
+                    preparedStatement.setString(3,password);
+                    preparedStatement.setString(4,gender);
+                    preparedStatement.executeUpdate(); // выполняем запрос
+                    System.out.println("Данные успешно добавлены!");
+                }
             }
+
         }
-
-
-
-
-
-
-
 
             //Перевод между пользователями
-            if (about == 1) {
+            if (about == 3) {
                 System.out.println("Выберите счет перевода");
                 //Вывод всех пользователей из базы данных.
                 try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
@@ -113,21 +139,17 @@ public class Main {
 
                     ResultSet resultSet = statement.executeQuery("SELECT * FROM YRtest.users");
                     while (resultSet.next()) {
-
                         int id = resultSet.getInt(1);
                         String name = resultSet.getString(2);
                         System.out.printf("%d. %s  \n", id, name);
-
                     }
-                //Здесь необходимо реализована выборка пользователя из списка выше и осуществляется перевод между счетами
-
+                //Здесь реализована выборка пользователя из списка выше и осуществляется перевод между счетами
                     System.out.print("Введите идентификатор пользователя: ");
                     int userId = s.nextInt();
                     String query = "SELECT * FROM YRtest.users WHERE id = ?";
                     PreparedStatement statement2 = con.prepareStatement(query);
                     statement2.setInt(1, userId);
                     ResultSet result = statement2.executeQuery();
-
                     if (result.next()) {
                         int x = 0;
                         String firstName = result.getString("name");
@@ -143,12 +165,9 @@ public class Main {
                 }
             }
 
-
-
-
-                if (about == 2) {
-                    System.out.println("You choose 3");
+                if (about == 4) {
+                    System.out.println("You choose 4");
                 }
             }
-        }
+}
 
